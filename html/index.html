@@ -34,7 +34,7 @@
 
 <body>
 	<div class="main">
-		<h3>4.2 寸电子墨水屏蓝牙控制器（nRF51）</h3>
+		<h3>4.2 寸电子墨水屏蓝牙控制器（nRF5）</h3>
 		<fieldset>
 			<legend>蓝牙</legend>
 			<div style="display: flex; justify-content: space-between;">
@@ -52,11 +52,15 @@
 					<button id="clearcanvasbutton" type="button" class="secondary" onclick="clear_canvas()">清除画布</button>
 					<button id="sendimgbutton" type="button" class="primary" onclick="sendimg()">发送图片</button>
 					<label for="interleavedcount" style="margin-left: 20px;">确认间隔</label>
-					<input type="number" id="interleavedcount" value="50">
+					<input type="number" id="interleavedcount" value="50" min="0" max="500">
+				</div>
+				<div>
+					<button id="synctimebutton" type="button" class="primary" onclick="syncTime()">日历模式</button>
 				</div>
 				<div>
 					<button id="clearscreenbutton" type="button" class="secondary" onclick="clearscreen()">清除屏幕</button>
-					<button id="synctimebutton" type="button" class="primary" onclick="syncTime()">日历模式</button>
+					<input type="text" id="cmdTXT" value="">
+					<button id="sendcmdbutton" type="button" class="primary" onclick="sendcmd()">发送命令</button>
 				</div>
 			</div>
 			<div style="font-size: 85%; color: #666; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dotted #AAA;"><b>状态：</b><span id="status"></span></div>

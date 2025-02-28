@@ -152,7 +152,7 @@ async function preConnect() {
     connectTrys = 0;
     try {
       bleDevice = await navigator.bluetooth.requestDevice({
-        optionalServices: [BLE_UUID_CURRENT_TIME_SERVICE, BLE_UUID_UART_SERVICE],
+        optionalServices: [BLE_UUID_UART_SERVICE],
         acceptAllDevices: true
       });
     } catch (e) {
@@ -176,8 +176,14 @@ async function reConnect() {
 
 async function clearscreen() {
   if (confirm('确认清除屏幕内容?')) {
-    write("clear");
+    await write("clear");
   }
+}
+
+async function sendcmd() {
+  const cmdTXT = document.getElementById('cmdTXT').value;
+  if (cmdTXT == '') return;
+  await write(cmdTXT);
 }
 
 async function syncTime() {
