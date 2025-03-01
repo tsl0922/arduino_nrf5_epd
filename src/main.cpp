@@ -21,15 +21,17 @@ static BLEUart *pUart = nullptr;
 static EPDUartImage *pUartImage = nullptr;
 
 static bool advertising = true;
-static bool updateCalendar = true;
+static bool updateCalendar = false;
 static EPDMode epdMode = NONE;
 
+#ifdef WAKEUP_PIN
 static void sleepModeEnter()
 {
     NIMBLE_LOGI("Main", "Entering deep sleep mode");
     nrf_gpio_cfg_sense_input(WAKEUP_PIN, NRF_GPIO_PIN_PULLDOWN, NRF_GPIO_PIN_SENSE_HIGH);
     systemPowerOff();
 }
+#endif
 
 static void handleCmd(String cmd)
 {
@@ -39,10 +41,12 @@ static void handleCmd(String cmd)
         epdMode = NONE;
         EPDClear();
     }
+#ifdef WAKEUP_PIN
     else if (cmd == "sleep")
     {
         sleepModeEnter();
     }
+#endif
     else if (cmd == "reboot")
     {
         systemRestart();
@@ -73,6 +77,7 @@ class ServerCallbacks : public NimBLEServerCallbacks
 static void onAdvertisingComplete(NimBLEAdvertising *pAdvert)
 {
     NIMBLE_LOGI("NimBLE", "Advertising Complete");
+#ifdef WAKEUP_PIN
     if (epdMode == CALENDAR)
     {
         pinMode(WAKEUP_PIN, INPUT_PULLDOWN);
@@ -85,6 +90,9 @@ static void onAdvertisingComplete(NimBLEAdvertising *pAdvert)
     {
         sleepModeEnter();
     }
+#else
+    advertising = true;
+#endif
 }
 
 static void advertisingInit()
@@ -150,6 +158,11 @@ void setup(void)
     Serial.setPins(0, UART_TX_PIN);
 #endif
     Serial.begin(115200);
+#endif
+
+#ifdef EPD_EN_PIN
+    pinMode(EPD_EN_PIN, OUTPUT);
+    digitalWrite(EPD_EN_PIN, 1);
 #endif
 
     SPI.setPins(0, SPI_SCK_PIN, SPI_MOSI_PIN);
